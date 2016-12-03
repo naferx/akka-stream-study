@@ -2,9 +2,8 @@ package com.github.naferx
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
-import akka.stream.scaladsl.{Keep, Sink, Source}
-import akka.stream.testkit._
-import akka.stream.testkit.scaladsl.{TestSink, TestSource}
+import akka.stream.scaladsl.{Keep, Source}
+import akka.stream.testkit.scaladsl.TestSink
 import org.scalatest.{FlatSpec, Matchers}
 
 
@@ -15,12 +14,17 @@ final class RandomNumberSourceSpec extends FlatSpec with Matchers {
 
 
   "RandomNumberSource" should "produce a random number" in {
-    val source = new RandomNumberSource
+    val source = new RandomNumberSource()
 
-    Source.fromGraph(source)
-          .runForeach(println)
+    val (_, sub) = Source.fromGraph(source).toMat(TestSink.probe)(Keep.both).run()
 
-
+    sub.request(2)
+    sub.expectNextPF {
+      case x => x shouldBe a [java.lang.Integer]
+    }
+    sub.expectNextPF {
+      case x => x shouldBe a [java.lang.Integer]
+    }
 
   }
 

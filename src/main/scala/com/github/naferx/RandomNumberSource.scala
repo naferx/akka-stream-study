@@ -1,9 +1,10 @@
 package com.github.naferx
 
-import java.util.Random
 
 import akka.stream.{Attributes, Outlet, SourceShape}
 import akka.stream.stage.{GraphStage, GraphStageLogic, OutHandler}
+
+import scala.util.Random
 
 
 final class RandomNumberSource extends GraphStage[SourceShape[Int]] {
